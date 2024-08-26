@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\RolesAndPermissions\Http\Controllers\Api;
+namespace App\Modules\Roles\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Role;
@@ -84,22 +84,33 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
-        $request->validate([
-            'name' => 'required|string|unique:roles,name,' . $role->id,
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|unique:roles,name,' . $role->id,
+            ]);
+    
+            $role->update([
+                'name'       => $request->name,
+                'guard_name' => "api",
+            ]);
+    
+            return response()->json([
+                "status"  => true,
+                "data"    => [
+                    'role' => $role,
+                ],
+                "message" => "Role updated successfully",
+            ], 200);
+        }
+        catch (\Exception $e) {
+            return response()->json([
+                "status"  => false,
+                "data"    => null,
+                "message" => "Error updating role: " . $e->getMessage(),
+            ], 500);
+        }
 
-        $role->update([
-            'name'       => $request->name,
-            'guard_name' => "api",
-        ]);
-
-        return response()->json([
-            "status"  => true,
-            "data"    => [
-                'role' => $role,
-            ],
-            "message" => "Role updated successfully",
-        ], 200);
+        
     }
 
     public function destroy(Role $role)

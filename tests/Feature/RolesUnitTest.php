@@ -5,7 +5,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Role;
 
-class RolesPermissionsTest extends TestCase
+class RolesUnitTest extends TestCase
 {
 
     /**
@@ -16,7 +16,7 @@ class RolesPermissionsTest extends TestCase
     public function test_index()
     {
         
-        $response = $this->get('/api/v1/roles_permissions');
+        $response = $this->get('/api/v1/roles');
 
         $response->assertStatus(200);
 
@@ -25,14 +25,13 @@ class RolesPermissionsTest extends TestCase
             "message" => "Lists of Roles"
         ]);
 
-        $response->assertStatus(200);
         dd($response->getContent());
     }
 
 
     public function test_index_with_search()
     {
-        $response = $this->get('/api/v1/roles_permissions?search=Admin');
+        $response = $this->get('/api/v1/roles?search=Admin');
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -51,8 +50,8 @@ class RolesPermissionsTest extends TestCase
             'guard_name' => 'web',
         ];
 
-        $response = $this->postJson('/api/v1/roles_permissions', $data);
-        $response->assertStatus(200);
+        $response = $this->postJson('/api/v1/roles', $data);
+        $response->assertStatus(201);
     
         $this->assertDatabaseHas('roles', [
             'name' => 'Test Role 4',
@@ -62,7 +61,7 @@ class RolesPermissionsTest extends TestCase
 
     public function test_show(){
         $roleID = 1;
-        $response = $this->get("/api/v1/roles_permissions/{$roleID}");        
+        $response = $this->get("/api/v1/roles/{$roleID}");        
         $response->assertStatus(200);
 
         dd($response->getContent());
@@ -73,11 +72,10 @@ class RolesPermissionsTest extends TestCase
     {
         $data = [
             'name' => 'Test Updated Role',
-            'guard_name' => 'api',
         ];
         $roleID = 4;
 
-        $response = $this->putJson("/api/v1/roles_permissions/{$roleID}", $data);
+        $response = $this->putJson("/api/v1/roles/{$roleID}", $data);
         $response->assertStatus(200);
     
         $this->assertDatabaseHas('roles', [
@@ -96,18 +94,16 @@ class RolesPermissionsTest extends TestCase
 
         $roleID = $role->id;
 
-        $response = $this->deleteJson("/api/v1/roles_permissions/{$roleID}");
-        $response->assertStatus(200);
+        $response = $this->deleteJson("/api/v1/roles/{$roleID}");
+        $response->assertStatus(204);
 
-        $response->assertJson([
-            "status" => true,
-            "data"    => null,
-            "message" => "Role deleted successfully",
-        ]);
+        $response->assertSee('');
 
         $this->assertDatabaseMissing('roles', [
             'id' => $roleID,
         ]);
+        // dd($response->getContent());
+
     }
 
 

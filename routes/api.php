@@ -1,7 +1,7 @@
 <?php
 
 use App\Modules\Auth\Http\Controllers\Api\AuthController;
-use App\Modules\RolesAndPermissions\Http\Controllers\Api\RoleController;
+use App\Modules\Roles\Http\Controllers\Api\RoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
