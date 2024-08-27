@@ -28,6 +28,6 @@ Route::prefix('/v1/auth')->name('api.auth.')->group(function () {
     });
 });
 
-Route::prefix('/v1')->group(function () {
+Route::prefix('/v1')->middleware('Admin')->group(function () {
     Route::resource('roles', RoleController::class);
 });

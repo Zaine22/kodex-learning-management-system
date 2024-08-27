@@ -56,7 +56,8 @@ class RolesUnitTest extends TestCase
         $this->assertDatabaseHas('roles', [
             'name' => 'Test Role 4',
             'guard_name' => 'web',
-        ]);
+        ]);         
+        dd($response->getContent());
     }
 
     public function test_show(){
@@ -82,29 +83,27 @@ class RolesUnitTest extends TestCase
             'name' => 'Test Updated Role',
             'guard_name' => 'api',
         ]);
+        dd($response->getContent());
     }
 
 
     public function test_destroy()
     {
         $role = Role::create([
-            'name' => 'Testing 1',
+            'name' => 'Testing Role Policy 23',
             'guard_name' => 'api',
         ]);
 
         $roleID = $role->id;
-
         $response = $this->deleteJson("/api/v1/roles/{$roleID}");
-        $response->assertStatus(204);
+        
+        dd($response->getContent());
 
+        $response->assertStatus(204);
         $response->assertSee('');
 
         $this->assertDatabaseMissing('roles', [
             'id' => $roleID,
         ]);
-        // dd($response->getContent());
-
     }
-
-
 }
