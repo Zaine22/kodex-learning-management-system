@@ -43,6 +43,8 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        $user->assignRole('Student');
+
         return response()->json([
             'success' => true,
             'message' => 'User created successfully',
