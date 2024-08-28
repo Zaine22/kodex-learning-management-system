@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\Auth\Http\Controllers\Api\AuthController;
+use App\Modules\User\Http\Controllers\Api\UserController as ApiUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,8 +25,12 @@ Route::prefix('/v1/auth')->name('api.auth.')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register'])->name('register');
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-
     Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         return $request->user();
     });
+});
+
+//user
+Route::prefix('/v1/')->name('api.users')->group(function () {
+    Route::resource('/users', ApiUserController::class);
 });
