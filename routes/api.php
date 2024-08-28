@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\Auth\Http\Controllers\Api\AuthController;
+use App\Modules\Roles\Http\Controllers\Api\RoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,4 +26,8 @@ Route::prefix('/v1/auth')->name('api.auth.')->group(function () {
     Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         return $request->user();
     });
+});
+
+Route::prefix('/v1')->middleware('Admin')->group(function () {
+    Route::resource('roles', RoleController::class);
 });
