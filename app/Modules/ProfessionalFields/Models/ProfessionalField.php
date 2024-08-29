@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Models;
-
+namespace App\Modules\ProfessionalField\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class professional_field extends Model
+class ProfessionalField extends Model
 {
     use HasFactory;
 

@@ -1,10 +1,10 @@
 <?php
 
-use App\Modules\Auth\Http\Controllers\Api\AuthController;
-use App\Modules\Auth\Http\Controllers\Api\InstructorController;
-use App\Modules\Auth\Http\Controllers\Api\ProfessionalFieldController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Modules\Auth\Http\Controllers\Api\AuthController;
+use App\Modules\Auth\Http\Controllers\Api\InstructorController;
+use App\Modules\ProfessionalField\Http\Controller\Api\ProfessionalFieldController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,12 +29,14 @@ Route::prefix('/v1/auth')->name('api.auth.')->group(function () {
         return $request->user();
     });
 
-    Route::prefix('/v1')->group(function () {
-        Route::resource('professionalField', ProfessionalFieldController::class);
-    });
+
 
     Route::prefix('/v1')->group(function () {
         Route::post('instructor/create',[InstructorController::class,'instructorCreate']);
+    });
+
+    Route::prefix('/v1')->group(function(){
+        Route::resource('professionalField',ProfessionalFieldController::class);
     });
 
 });
