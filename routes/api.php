@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\Auth\Http\Controllers\Api\AuthController;
+use App\Modules\Categories\Http\Controllers\Api\CategoryController;
 use App\Modules\Roles\Http\Controllers\Api\RoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,7 @@ Route::prefix('/v1/auth')->name('api.auth.')->group(function () {
     });
 });
 
-Route::prefix('/v1')->middleware('Admin')->group(function () {
+Route::prefix('/v1')->middleware(['auth:sanctum'])->group(function () {
     Route::resource('roles', RoleController::class);
+    Route::resource('categories', CategoryController::class);
 });
