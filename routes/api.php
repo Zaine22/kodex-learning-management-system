@@ -39,4 +39,5 @@ Route::prefix('/v1/auth')->name('api.auth.')->group(function () {
         Route::resource('professionalField',ProfessionalFieldController::class);
     });
 
+
 });
