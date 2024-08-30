@@ -2,12 +2,13 @@
 
 namespace App\Modules\Auth\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Modules\Auth\Http\Requests\LoginRequest;
-use App\Modules\Auth\Http\Requests\RegisterRequest;
+use Illuminate\Support\Str;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Modules\Auth\Http\Requests\LoginRequest;
+use App\Modules\Auth\Http\Requests\RegisterRequest;
 
 class AuthController extends Controller
 {
@@ -42,6 +43,8 @@ class AuthController extends Controller
         $request->validated($request->only(['name', 'email', 'password']));
 
         $user = User::create([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
