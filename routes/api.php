@@ -4,6 +4,8 @@ use App\Http\Middleware\CheckAdminMiddleware;
 use App\Modules\Auth\Http\Controllers\Api\AuthController;
 use App\Modules\Categories\Http\Controllers\Api\CategoryController;
 use App\Modules\Roles\Http\Controllers\Api\RoleController;
+use App\Modules\Languages\Http\Controllers\Api\LanguageController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +36,8 @@ Route::prefix('/v1/auth')->name('api.auth.')->group(function () {
 });
 
 Route::prefix('/v1')->middleware(['auth:sanctum'])->group(function () {
-    Route::resource('roles', RoleController::class)->middleware(CheckAdminMiddleware::class);
+    Route::resource('roles', RoleController::class)->middleware('CheckAdmin');
     Route::resource('categories', CategoryController::class);
+    Route::resource('languages', LanguageController::class);
 });
+

@@ -3,129 +3,44 @@
 namespace App\Modules\Roles\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Role;
+use App\Modules\Roles\Models\Role;
 use Illuminate\Http\Request;
+use App\Modules\Roles\Http\Requests\RolePostRequest;
+use App\Modules\Roles\Services\RoleService;
 
 class RoleController extends Controller
 {
+    private $service;
+
+    public function __construct(RoleService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index(Request $request)
     {
-        try {
-            $roles = Role::query();
-
-            if ($request->has('search') && !empty($request->search)) {
-                $roles = $roles->where('name', 'like', '%' . $request->search . '%');
-            }
-
-            $roles = $roles->paginate($request->get('per_page', 10));
-
-            return response()->json([
-                "status"  => true,
-                "data"    => [
-                    'roles' => $roles,
-                ],
-                "message" => "Lists of Roles",
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                "status"  => false,
-                "data"    => null,
-                "message" => "Error fetching roles: " . $e->getMessage(),
-            ], 500);
-        }
+        return $this->service->all($request);
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|unique:roles,name',
-        ]);
-
-        try {
-            $role = Role::create([
-                'name'       => $request->name,
-                'guard_name' => "api",
-            ]);
-
-            return response()->json([
-                "status"  => true,
-                "data"    => [
-                    'role' => $role,
-                ],
-                "message" => "Role created successfully",
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                "status"  => false,
-                "data"    => null,
-                "message" => "Error creating role: " . $e->getMessage(),
-            ], 500);
-        }
+        return $this->service->store($request);
     }
 
     public function show(Role $role)
     {
-        try {
-            return response()->json([
-                "status"  => true,
-                "data"    => [
-                    'role' => $role,
-                ],
-                "message" => "Role fetched successfully",
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                "status"  => false,
-                "data"    => null,
-                "message" => "Error fetching role: " . $e->getMessage(),
-            ], 500);
-        }
+        return $this->service->show($role);
+
     }
 
     public function update(Request $request, Role $role)
     {
-        try {
-            $request->validate([
-                'name' => 'required|string|unique:roles,name,' . $role->id,
-            ]);
-    
-            $role->update([
-                'name'       => $request->name,
-                'guard_name' => "api",
-            ]);
-    
-            return response()->json([
-                "status"  => true,
-                "data"    => [
-                    'role' => $role,
-                ],
-                "message" => "Role updated successfully",
-            ], 200);
-        }
-        catch (\Exception $e) {
-            return response()->json([
-                "status"  => false,
-                "data"    => null,
-                "message" => "Error updating role: " . $e->getMessage(),
-            ], 500);
-        }
-
-        
+        return $this->service->update($request, $role);
     }
 
     public function destroy(Role $role)
     {
-        try {
-            $role->delete();
-
-            return response()->json([], 204);
-        } catch (\Exception $e) {
-            return response()->json([
-                "status"  => false,
-                "data"    => null,
-                "message" => "Error deleting role: " . $e->getMessage(),
-            ], 500);
-        }
+        return $this->service->destroy($role);
     }
 
 }
