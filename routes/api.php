@@ -1,6 +1,9 @@
 <?php
 
 use App\Modules\Auth\Http\Controllers\Api\AuthController;
+use App\Modules\Categories\Http\Controllers\Api\CategoryController;
+use App\Modules\Languages\Http\Controllers\Api\LanguageController;
+use App\Modules\Roles\Http\Controllers\Api\RoleController;
 use App\Modules\User\Http\Controllers\Api\UserController as ApiUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -30,7 +33,9 @@ Route::prefix('/v1/auth')->name('api.auth.')->group(function () {
     });
 });
 
-//user
-Route::prefix('/v1/')->name('api.users')->group(function () {
+Route::prefix('/v1')->middleware(['auth:sanctum'])->group(function () {
     Route::resource('/users', ApiUserController::class);
+    Route::resource('roles', RoleController::class)->middleware('CheckAdmin');
+    Route::resource('categories', CategoryController::class);
+    Route::resource('languages', LanguageController::class);
 });
