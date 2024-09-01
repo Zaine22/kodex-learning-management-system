@@ -34,15 +34,6 @@ Route::prefix('/v1/auth')->name('api.auth.')->group(function () {
     Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         return $request->user();
     });
-
-    Route::prefix('/v1')->group(function () {
-        Route::post('instructor/create', [InstructorController::class, 'instructorCreate']);
-    });
-
-    Route::prefix('/v1')->group(function () {
-        Route::resource('professionalField', ProfessionalFieldController::class);
-    });
-
 });
 
 Route::prefix('/v1')->middleware(['auth:sanctum'])->group(function () {
@@ -50,4 +41,7 @@ Route::prefix('/v1')->middleware(['auth:sanctum'])->group(function () {
     Route::resource('roles', RoleController::class)->middleware('CheckAdmin');
     Route::resource('categories', CategoryController::class);
     Route::resource('languages', LanguageController::class);
+
+    Route::resource('professional-fields', ProfessionalFieldController::class);
+    Route::post('instructor/create', [InstructorController::class, 'instructorCreate']);
 });
