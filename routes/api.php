@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Middleware\CheckAdminMiddleware;
 use App\Modules\Auth\Http\Controllers\Api\AuthController;
 use App\Modules\Auth\Http\Controllers\Api\InstructorController;
 use App\Modules\Categories\Http\Controllers\Api\CategoryController;
+use App\Modules\Languages\Http\Controllers\Api\LanguageController;
 use App\Modules\ProfessionalField\Http\Controller\Api\ProfessionalFieldController;
 use App\Modules\Roles\Http\Controllers\Api\RoleController;
+use App\Modules\User\Http\Controllers\Api\UserController as ApiUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,7 +31,6 @@ Route::prefix('/v1/auth')->name('api.auth.')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
     Route::post('/changePassword', [AuthController::class, 'changePassword'])->name('changePassword');
-
     Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         return $request->user();
     });
@@ -46,6 +46,8 @@ Route::prefix('/v1/auth')->name('api.auth.')->group(function () {
 });
 
 Route::prefix('/v1')->middleware(['auth:sanctum'])->group(function () {
-    Route::resource('roles', RoleController::class)->middleware(CheckAdminMiddleware::class);
+    Route::resource('/users', ApiUserController::class);
+    Route::resource('roles', RoleController::class)->middleware('CheckAdmin');
     Route::resource('categories', CategoryController::class);
+    Route::resource('languages', LanguageController::class);
 });
