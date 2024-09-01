@@ -2,12 +2,14 @@
 
 namespace App\Modules\Auth\Http\Controllers\Api;
 
-use App\Models\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Modules\Auth\Http\Requests\LoginRequest;
+use App\Modules\Auth\Http\Requests\RegisterRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Modules\Auth\Http\Requests\LoginRequest;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -38,32 +40,66 @@ class AuthController extends Controller
     }
 
     //change password
-    public function changePassword(Request $request){
-          // Validate the input
-          $request->validate([
-            'current_password' => 'required',
-            'new_password' => 'required|min:8',
-            'password_confirmation'=>'required|min:6|same:new_password',
+    public function changePassword(Request $request)
+    {
+        // Validate the input
+        $request->validate([
+            'current_password'      => 'required',
+            'new_password'          => 'required|min:8',
+            'password_confirmation' => 'required|min:6|same:new_password',
         ]);
 
         // Get the authenticated user
         $user = Auth::user();
 
-         // Check if the current password matches
-         if (!Hash::check($request->current_password, $user->password)) {
-          return response()->json([
-            "status"=>false,
-            "data"=>null,
-            "message"=>"Current password is incorrect."
-          ],500);
+        // Check if the current password matches
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                "status"  => false,
+                "data"    => null,
+                "message" => "Current password is incorrect.",
+            ], 500);
         }
 
         // Update the password
         $user->password = Hash::make($request->new_password);
         $user->save();
+
         return response()->json([
-            "status"=>true,
-            "message"=>"Password Changed Successfully."
-          ],200);
+            "status"  => true,
+            "message" => "Password Changed Successfully.",
+        ], 200);
+    }
+
+    public function register(RegisterRequest $request)
+    {
+        $request->validated($request->only(['name', 'email', 'password']));
+
+        $user = User::create([
+            'name'     => $request->name,
+            'slug'     => Str::slug($request->name),
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        $token = $user->createToken('API Token')->plainTextToken;
+
+        return response()->json([
+            "status"  => 200,
+            "data"    => [
+                "user"  => $user,
+                "token" => $token,
+            ],
+            "message" => "Registration successful",
+        ], 200);
+
+    }
+
+    public function logout()
+    {
+        auth()->user()->currentAccessToken()->delete();
+
+        return response()->json(['message' => 'Logged out successfully']);
     }
 }
