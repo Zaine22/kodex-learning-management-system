@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class ProfessionalFieldController extends Controller{
     private $service;
 
-    public function __construct( $service ){
+    public function __construct(ProfessionalFieldService $service ){
         $this->service=$service;
     }
 
